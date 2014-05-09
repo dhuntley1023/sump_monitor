@@ -11,10 +11,10 @@ while True:
 			)
 	
 	pressure_val = (bytes[0][0] << 8) + bytes[0][1]
-	print("PSI DIFF =", (pressure_val - 1667) * 5 /(14745 - 1667))
+	print("PSI DIFF = %.2f" % ((pressure_val - 1667) * 5 /(14745 - 1667)))
 	
 	temp_val = bytes[0][2]
-	print("TEMP (C) =", ((temp_val << 3) / 2047 * 200) - 50)
+	print("TEMP (C) = %.2f" % (((temp_val << 3) / 2047 * 200) - 50))
 	
 	print()
 	
