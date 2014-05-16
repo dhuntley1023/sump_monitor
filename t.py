@@ -5,7 +5,7 @@ import sqlite3
 address = 0x38
 iodir_register = 0x01
 
-conn = sqlite3.connect('temp.db')
+conn = sqlite3.connect('temp.db', 15) #Increased timeout to 15s as temporary workaround for long-selects
 c = conn.cursor()
 
 while True:
