@@ -14,7 +14,7 @@ def display_all_temps():
 		conn = sqlite3.connect("temp.db")
 		cur = conn.cursor()
 		
-		for row in cur.execute("select sample_time, temperature from temperature order by sample_time;"):
+		for row in cur.execute("select sample_time, temperature from temperature where sample_time > datetime('now', 'localtime', '-24 hours') order by sample_time;"):
 			sample_time = row[0]
 			temperature = row[1]
 			
