@@ -1,12 +1,15 @@
 from flask import Flask
 import sqlite3
+import string
 
 
 app = Flask(__name__)
 
 @app.route("/")
 def display_all_temps():
-		response = '<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>'
+		response = []
+		
+		response.append('<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>')
 		
 		conn = sqlite3.connect("temp.db")
 		cur = conn.cursor()
@@ -15,18 +18,20 @@ def display_all_temps():
 			sample_time = row[0]
 			temperature = row[1]
 			
-			response = response + "<tr><td>" + sample_time + "</td><td>" + str(temperature) + "</td></tr>"
+			response.append("<tr><td>" + sample_time + "</td><td>" + str(temperature) + "</td></tr>")
 			
-		response = response + "</table></body></html>"
+		response.append("</table></body></html>")
 		
 		cur.close()
 		conn.close()
 		
-		return response
+		return string.join(response, '')
 
 @app.route("/hourly")
 def display_hourly_temps():
-		response = '<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>'
+		response = []
+		
+		response.append('<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>')
 		
 		conn = sqlite3.connect("temp.db")
 		cur = conn.cursor()
@@ -35,14 +40,14 @@ def display_hourly_temps():
 			sample_time = row[0]
 			temperature = row[1]
 			
-			response = response + "<tr><td>" + sample_time + "</td><td>" + str(temperature) + "</td></tr>"
+			response.append("<tr><td>" + sample_time + "</td><td>" + str(temperature) + "</td></tr>")
 			
-		response = response + "</table></body></html>"
+		response.append("</table></body></html>")
 		
 		cur.close()
 		conn.close()
 		
-		return response
+		return string.join(response, '')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
