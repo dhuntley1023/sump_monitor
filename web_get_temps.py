@@ -11,10 +11,10 @@ def display_all_temps():
 		
 		response.append('<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>')
 		
-		conn = sqlite3.connect("temp.db")
+		conn = sqlite3.connect("temp_monitor.db")
 		cur = conn.cursor()
 		
-		for row in cur.execute("select sample_time, temperature from temperature where sample_time > datetime('now', 'localtime', '-24 hours') order by sample_time;"):
+		for row in cur.execute("select sample_time, temperature from temp_history where sample_time > datetime('now', 'localtime', '-24 hours') order by sample_time;"):
 			sample_time = row[0]
 			temperature = row[1]
 			
@@ -33,10 +33,10 @@ def display_hourly_temps():
 		
 		response.append('<html><body><table border="1"><tr><td>Timestamp</td><td>Temp</td></tr>')
 		
-		conn = sqlite3.connect("temp.db")
+		conn = sqlite3.connect("temp_monitor.db")
 		cur = conn.cursor()
 		
-		for row in cur.execute('select strftime("%m-%d-%Y %H:00", sample_time) as stime, avg(temperature) from temperature group by stime order by stime;'):
+		for row in cur.execute('select strftime("%m-%d-%Y %H:00", sample_time) as stime, avg(temperature) from temp_history group by stime order by stime;'):
 			sample_time = row[0]
 			temperature = row[1]
 			

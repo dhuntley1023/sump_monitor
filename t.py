@@ -18,8 +18,8 @@ while True:
 	temperature = (((temp_val / 2047 * 200) - 50) * 9/5 + 32)
 
 	try:
-		with sqlite3.connect('temp.db', 10) as db:
-			db.execute("insert into temperature values (datetime('now', 'localtime'), ?);", [temperature])
+		with sqlite3.connect('temp_monitor.db', 10) as db:
+			db.execute("insert into temp_history values (strftime('%Y-%m-%d %H:%M', 'now', 'localtime'), ?);", [temperature])
 			db.commit()
 		
 	except sqlite3.OperationalError:  
@@ -30,4 +30,4 @@ while True:
 		# print("Insert ok")
 		pass
 
-	time.sleep(15)
+	time.sleep(60)
