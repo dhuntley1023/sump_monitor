@@ -1,5 +1,4 @@
 import quick2wire.i2c as i2c
-import time
 
 class SensorUnits:
 	TempFahrenheit = "fahrenheit"
@@ -23,18 +22,15 @@ class Sensor:
 		self.i2c_address = i2c_address
 		
 	def _read_sensor_data(self):
-		iodir_register = self.i2c_bus
-		address = self.i2c_address
-		
 		with i2c.I2CMaster() as bus:
 			bytes = bus.transaction(
-				i2c.reading(address, 4)
+				i2c.reading(self.i2c_address, 4)
 				)
 				
 		status = bytes[0][0] >> 6
 		
 		if (status != 0):
-			raise(SensorError(status))
+			raise SensorError(status)
 			
 		pressure_value = ((bytes[0][0] & 0b00111111) << 8) + bytes[0][1]
 		temp_value = (bytes[0][2] << 3) + (bytes[0][3] >> 5)
@@ -49,7 +45,7 @@ class Sensor:
 			elif (t_unit == SensorUnits.TempCelsius):
 				return self._celsius(t_val)
 			else:
-				raise(RuntimeError("Invalid unit to Sensor.read_temp()"))
+				raise RuntimeError("Invalid unit to Sensor.read_temp()")
 		
 	def read_pressure(self, p_unit = SensorUnits.PressurePSI):
 			(p_val, t_val) = self._read_sensor_data()
@@ -58,7 +54,7 @@ class Sensor:
 			elif (p_unit == SensorUnits.PressureInH2O):
 				return self._inH2O(p_val)
 			else:
-				raise(RuntimeError, "Invalid unit to Sensor.read_temp()")
+				raise RuntimeError("Invalid unit to Sensor.read_pressure()")
 		
 	def read_pressure_and_temp(self, p_unit = SensorUnits.PressurePSI, t_unit = SensorUnits.TempFahrenheit):
 		(p_val, t_val) = self._read_sensor_data()
@@ -67,14 +63,14 @@ class Sensor:
 		elif (p_unit == SensorUnits.PressureInH2O):
 			p_return = self._inH2O(p_val)
 		else:
-			raise(RuntimeError, "Invalid unit to Sensor.read_pressure_and_temp()")
+			raise RuntimeError("Invalid pressure unit to Sensor.read_pressure_and_temp()")
 
 		if (t_unit == SensorUnits.TempFahrenheit):
 			t_return = self._fahrenheit(t_val)
 		elif (t_unit == SensorUnits.TempCelsius):
 			t_return = self._celsius(t_val)
 		else:
-			raise(RuntimeError, "Invalid unit to Sensor.read_pressure_and_temp()")
+			raise RuntimeError("Invalid temperature unit to Sensor.read_pressure_and_temp()")
 
 		return (p_return, t_return)
 
