@@ -17,8 +17,21 @@ CREATE UNIQUE INDEX IF NOT EXISTS sample_time ON samples (sample_time);
 ** Hourly summary of sump pump activity
 */
 CREATE TABLE IF NOT EXISTS hourly_summaries (
-	sample_time CHAR PRIMARY KEY,  -- Format YYYY-MM-DD HH:00
+	summary_hour CHAR PRIMARY KEY,  -- Format YYYY-MM-DD HH:00
 	num_drainings INT, -- Number of times the sump pump activated
 	gallons_drained REAL  -- Number of gallons that were drained
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS summary_hour ON hourly_summaries (summary_hour);
+
+
+/*
+** Table: activations
+**
+** Log of pump activations
+*/
+CREATE TABLE IF NOT EXISTS activations (
+	activation_time CHAR PRIMARY KEY -- Format YYYY-MM-DD HH:MM
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS activation_time ON activations (activation_time);	
