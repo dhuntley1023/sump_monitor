@@ -41,30 +41,28 @@ while True:
 	depth_avg = sum / count
 	#print("Sending msg: depth = " + str(depth_avg));
 	#send_text_msg("Current depth: " + str(depth_avg));
-
-	try:
-		# print(depth_avg)
-		with sqlite3.connect('sump.db', 10) as db:
-			db.execute("insert into samples values (strftime('%Y-%m-%d %H:%M', 'now', 'localtime'), ?);", [depth_avg])
-			db.commit()
-		
-	except sqlite3.OperationalError:  
-		# print("Timed out!")
-		pass	# We want to catch the error and just move on.  We'll skip this one.
-			
-	else:
-		# print("Insert ok")
-		pass
-
-
 	depth_diff = depth_avg - last_minute_depth
 	last_minute_depth = depth_avg
 
-	if (depth_diff <= -0.20) and (not pump_active):
-		send_text_msg("Sump Pump Activated...");
-		pump_active = True
+	try:
+		with sqlite3.connect('sump.db', 30) as db:
+			db.execute("insert into samples values (strftime('%Y-%m-%d %H:%M', 'now', 'localtime'), ?);", [depth_avg])
+			db.commit()
+		
+			if (depth_diff <= -0.20) and (not pump_active):
+				pump_active = True
+				send_text_msg("Sump Pump Activated...");
+				db.execute("insert into activations values (strftime('%Y-%m-%d %H:%M', 'now', 'localtime'));")
+				db.commit()
 
-	if (depth_diff >= 0.0) and pump_active:
-		#send_text_msg("Sump Pump Turned Off");
-		pump_active = False
+			if (depth_diff >= 0.0) and pump_active:
+				pump_active = False
+				#send_text_msg("Sump Pump Turned Off");
+
+	except sqlite3.OperationalError:  
+		# Most likely a timeout
+		pass	# We want to catch the error and just move on.  We'll skip this one.
+
+
+
 
