@@ -110,6 +110,7 @@ class Sensor:
 		else:
 			raise RuntimeError("Invalid temperature unit to Sensor.read_pressure_and_temperature()")
 
+		print(p_val)
 		return (p_return, t_return)
 
 
@@ -152,6 +153,8 @@ class Sensor:
 		except IOError:    # Raised when sensor can't be read.  Convert to RuntimeError to pass back a msg 
 			raise RuntimeError("Can't read from sensor.  Likely incorrect bus or i2c address.")
 
+		#for n in bytes[0]:
+		#	print(n)
 		# Check status code
 		status = bytes[0][0] >> 6
 		if (status != 0):
@@ -168,7 +171,7 @@ class Sensor:
 	# Utility functions to convert raw sensor value to pressure and temperature readings
 	#
 	def _psi(self, p_val):
-			return (p_val - self.p_val_min) * 5 /(14745 - self.p_val_min)
+			return (p_val - self.p_val_min) /(14745 - self.p_val_min) * 5
 			
 	def _inH2O(self, p_val):
 			return self._psi(p_val) * 27.679904843
