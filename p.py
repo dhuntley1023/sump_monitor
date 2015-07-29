@@ -8,13 +8,16 @@ def send_text_msg(m):
 	ACCOUNT_SID = "AC9079652eae20b65630a4f3b5002f8aca" 
 	AUTH_TOKEN = "b143c5168050ea776e3b60614331b89d" 
  
-	client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
- 
-	client.messages.create(
-		to="408-832-4061", 
-		from_="+16692216493", 
-		body=m  
-	)
+	try:
+		client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
+		client.messages.create(
+			to="408-832-4061", 
+			from_="+16692216493", 
+			body=m  
+		)
+
+	except:
+		print("Error sending text message... skipping for now")
 
 
 s = sensor.Sensor()
@@ -39,7 +42,7 @@ while True:
 		time.sleep(1)
 
 	depth_avg = sum / count
-	#print("Sending msg: depth = " + str(depth_avg));
+	print("Depth = " + str(depth_avg));
 	#send_text_msg("Current depth: " + str(depth_avg));
 	depth_diff = depth_avg - last_minute_depth
 	last_minute_depth = depth_avg
